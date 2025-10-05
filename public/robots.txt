@@ -1,0 +1,9 @@
+# robots.txt for Portfolio Website
+User-agent: *
+Allow: /
+
+# Sitemaps
+Sitemap: https://adammaulana.dev/sitemap-index.xml
+
+# Block access to API routes (optional)
+Disallow: /api/

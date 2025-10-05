@@ -1,0 +1,292 @@
+---
+import { getCollection } from 'astro:content';
+import Layout from '../../layouts/Layout.astro';
+
+export async function getStaticPaths() {
+  const blogEntries = await getCollection('blog', ({ data }) => {
+    return data.draft !== true;
+  });
+
+  return blogEntries.map(entry => ({
+    params: { slug: entry.slug },
+    props: { entry },
+  }));
+}
+
+const { entry } = Astro.props;
+const { Content } = await entry.render();
+---
+
+<Layout title={entry.data.title} description={entry.data.description}>
+  <article class="blog-post">
+    <header class="post-header">
+      <div class="container">
+        <a href="/blog" class="back-link">← Back to Blog</a>
+        <div class="post-meta">
+          <time datetime={entry.data.pubDate.toISOString()}>
+            {entry.data.pubDate.toLocaleDateString('en-US', {
+              year: 'numeric',
+              month: 'long',
+              day: 'numeric'
+            })}
+          </time>
+          <span class="separator">•</span>
+          <span>{entry.data.author}</span>
+        </div>
+        <h1>{entry.data.title}</h1>
+        <p class="description">{entry.data.description}</p>
+        {entry.data.image && (
+          <div class="featured-image">
+            <img src={entry.data.image} alt={entry.data.title} />
+          </div>
+        )}
+        <div class="tags">
+          {entry.data.tags.map((tag) => (
+            <span class="tag">{tag}</span>
+          ))}
+        </div>
+      </div>
+    </header>
+
+    <div class="post-body">
+      <div class="container">
+        <div class="prose">
+          <Content />
+        </div>
+      </div>
+    </div>
+
+    <footer class="post-footer">
+      <div class="container">
+        <div class="author-card">
+          <div class="author-info">
+            <h3>{entry.data.author}</h3>
+            <p>Full Stack Web Developer passionate about creating modern, performant web applications.</p>
+          </div>
+          <a href="/#contact" class="btn">Get in Touch</a>
+        </div>
+        <a href="/blog" class="back-to-blog">← Back to All Posts</a>
+      </div>
+    </footer>
+  </article>
+</Layout>
+
+<style>
+  .blog-post {
+    padding-top: 70px;
+  }
+
+  .post-header {
+    padding: 3rem 0 2rem;
+    background: var(--bg-secondary);
+  }
+
+  .back-link {
+    color: var(--primary);
+    text-decoration: none;
+    font-weight: 500;
+    display: inline-flex;
+    align-items: center;
+    margin-bottom: 1.5rem;
+    transition: color var(--transition);
+  }
+
+  .back-link:hover {
+    color: var(--primary-dark);
+  }
+
+  .post-meta {
+    color: var(--text-light);
+    font-size: 0.9rem;
+    margin-bottom: 1rem;
+  }
+
+  .separator {
+    margin: 0 0.5rem;
+  }
+
+  .post-header h1 {
+    margin-bottom: 1rem;
+    line-height: 1.2;
+  }
+
+  .description {
+    font-size: 1.25rem;
+    color: var(--text-light);
+    margin-bottom: 2rem;
+    line-height: 1.6;
+  }
+
+  .featured-image {
+    border-radius: 12px;
+    overflow: hidden;
+    margin: 2rem 0;
+    aspect-ratio: 2/1;
+  }
+
+  .featured-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  .tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    margin-top: 1.5rem;
+  }
+
+  .tag {
+    background: var(--bg);
+    color: var(--primary);
+    padding: 0.5rem 1rem;
+    border-radius: 20px;
+    font-size: 0.875rem;
+    font-weight: 500;
+  }
+
+  .post-body {
+    padding: 3rem 0;
+  }
+
+  .prose {
+    max-width: 720px;
+    margin: 0 auto;
+    color: var(--text);
+    line-height: 1.8;
+  }
+
+  .prose :global(h2) {
+    margin: 2.5rem 0 1rem;
+    color: var(--text);
+    font-size: 2rem;
+    border-bottom: 2px solid var(--border);
+    padding-bottom: 0.5rem;
+  }
+
+  .prose :global(h3) {
+    margin: 2rem 0 1rem;
+    color: var(--text);
+    font-size: 1.5rem;
+  }
+
+  .prose :global(p) {
+    margin: 1.25rem 0;
+  }
+
+  .prose :global(ul),
+  .prose :global(ol) {
+    margin: 1.25rem 0;
+    padding-left: 2rem;
+  }
+
+  .prose :global(li) {
+    margin: 0.5rem 0;
+  }
+
+  .prose :global(code) {
+    background: var(--bg-secondary);
+    padding: 0.2rem 0.4rem;
+    border-radius: 4px;
+    font-size: 0.9em;
+    font-family: 'Courier New', monospace;
+    color: var(--primary);
+  }
+
+  .prose :global(pre) {
+    background: var(--bg-secondary);
+    padding: 1.5rem;
+    border-radius: 8px;
+    overflow-x: auto;
+    margin: 1.5rem 0;
+    border: 1px solid var(--border);
+  }
+
+  .prose :global(pre code) {
+    background: none;
+    padding: 0;
+    color: var(--text);
+  }
+
+  .prose :global(blockquote) {
+    border-left: 4px solid var(--primary);
+    padding-left: 1.5rem;
+    margin: 1.5rem 0;
+    font-style: italic;
+    color: var(--text-light);
+  }
+
+  .prose :global(a) {
+    color: var(--primary);
+    text-decoration: none;
+    border-bottom: 1px solid var(--primary);
+    transition: color var(--transition);
+  }
+
+  .prose :global(a:hover) {
+    color: var(--primary-dark);
+  }
+
+  .prose :global(img) {
+    max-width: 100%;
+    height: auto;
+    border-radius: 8px;
+    margin: 1.5rem 0;
+  }
+
+  .post-footer {
+    padding: 3rem 0 4rem;
+    background: var(--bg-secondary);
+  }
+
+  .author-card {
+    background: var(--bg);
+    padding: 2rem;
+    border-radius: 12px;
+    box-shadow: 0 2px 8px var(--shadow);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 2rem;
+    margin-bottom: 2rem;
+  }
+
+  .author-info h3 {
+    margin-bottom: 0.5rem;
+    color: var(--text);
+  }
+
+  .author-info p {
+    color: var(--text-light);
+    line-height: 1.6;
+  }
+
+  .back-to-blog {
+    color: var(--primary);
+    text-decoration: none;
+    font-weight: 600;
+    display: inline-flex;
+    align-items: center;
+    transition: color var(--transition);
+  }
+
+  .back-to-blog:hover {
+    color: var(--primary-dark);
+  }
+
+  @media (max-width: 768px) {
+    .author-card {
+      flex-direction: column;
+      text-align: center;
+    }
+
+    .post-header {
+      padding: 2rem 0 1.5rem;
+    }
+
+    .prose {
+      font-size: 0.95rem;
+    }
+  }
+</style>
