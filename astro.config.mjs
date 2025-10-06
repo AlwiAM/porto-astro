@@ -1,14 +1,16 @@
 // @ts-check
 import { defineConfig } from 'astro/config';
-import node from '@astrojs/node';
+import vercel from '@astrojs/vercel/serverless';
 import sitemap from '@astrojs/sitemap';
 
 // https://astro.build/config
 export default defineConfig({
   site: 'https://adammaulana.dev', // Change to your domain
   output: 'server', // Enable API routes
-  adapter: node({
-    mode: 'standalone'
+  adapter: vercel({
+    webAnalytics: {
+      enabled: true
+    }
   }),
   integrations: [sitemap()],
   image: {
