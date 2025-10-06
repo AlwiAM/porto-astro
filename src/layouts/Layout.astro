@@ -102,15 +102,36 @@ const ogImageURL = new URL(image, Astro.site);
     </footer>
     <script>
       // Theme toggle functionality
-      const themeToggle = document.getElementById('theme-toggle');
+      function initThemeToggle() {
+        const themeToggle = document.getElementById('theme-toggle');
 
-      themeToggle?.addEventListener('click', () => {
-        const currentTheme = document.documentElement.getAttribute('data-theme');
-        const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+        if (!themeToggle) {
+          console.error('Theme toggle button not found');
+          return;
+        }
 
-        document.documentElement.setAttribute('data-theme', newTheme);
-        localStorage.setItem('theme', newTheme);
-      });
+        // Remove existing listener if any
+        const newToggle = themeToggle.cloneNode(true) as HTMLElement;
+        themeToggle.parentNode?.replaceChild(newToggle, themeToggle);
+
+        newToggle.addEventListener('click', () => {
+          const currentTheme = document.documentElement.getAttribute('data-theme');
+          const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+
+          document.documentElement.setAttribute('data-theme', newTheme);
+          localStorage.setItem('theme', newTheme);
+        });
+      }
+
+      // Initialize on DOM ready and after view transitions
+      if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', initThemeToggle);
+      } else {
+        initThemeToggle();
+      }
+
+      // Re-initialize after Astro view transitions
+      document.addEventListener('astro:page-load', initThemeToggle);
 
       // Register Service Worker for PWA
       if ('serviceWorker' in navigator) {

@@ -282,13 +282,19 @@
 <script>
   import { profileContext } from '../data/context';
 
-  const toggle = document.getElementById('chatbot-toggle');
-  const closeBtn = document.getElementById('chatbot-close');
-  const chatWindow = document.getElementById('chatbot-window');
-  const form = document.getElementById('chatbot-form') as HTMLFormElement;
-  const input = document.getElementById('chatbot-input') as HTMLInputElement;
-  const messages = document.getElementById('chatbot-messages');
-  const sendBtn = document.getElementById('send-btn') as HTMLButtonElement;
+  function initChatbot() {
+    const toggle = document.getElementById('chatbot-toggle');
+    const closeBtn = document.getElementById('chatbot-close');
+    const chatWindow = document.getElementById('chatbot-window');
+    const form = document.getElementById('chatbot-form') as HTMLFormElement;
+    const input = document.getElementById('chatbot-input') as HTMLInputElement;
+    const messages = document.getElementById('chatbot-messages');
+    const sendBtn = document.getElementById('send-btn') as HTMLButtonElement;
+
+    if (!toggle || !closeBtn || !chatWindow || !form || !input || !messages || !sendBtn) {
+      console.error('Chatbot elements not found');
+      return;
+    }
 
   // Chat history management
   const CHAT_HISTORY_KEY = 'adam_portfolio_chat_history';
@@ -473,4 +479,15 @@
     sendBtn.disabled = false;
     input.focus();
   });
+  }
+
+  // Initialize on DOM ready and after view transitions
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initChatbot);
+  } else {
+    initChatbot();
+  }
+
+  // Re-initialize after Astro view transitions
+  document.addEventListener('astro:page-load', initChatbot);
 </script>
