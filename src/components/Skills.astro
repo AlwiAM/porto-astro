@@ -1,0 +1,270 @@
+---
+// Skills with proficiency levels
+const skillCategories = [
+  {
+    category: "Frontend Development",
+    skills: [
+      { name: "React / Next.js", level: 95, icon: "⚛️" },
+      { name: "TypeScript", level: 90, icon: "📘" },
+      { name: "HTML5 / CSS3", level: 95, icon: "🎨" },
+      { name: "Tailwind / Styled Components", level: 90, icon: "💅" }
+    ]
+  },
+  {
+    category: "Backend Development",
+    skills: [
+      { name: "Node.js / Express", level: 90, icon: "🟢" },
+      { name: "Python / Django", level: 85, icon: "🐍" },
+      { name: "REST API / GraphQL", level: 90, icon: "🔌" },
+      { name: "PostgreSQL / MongoDB", level: 85, icon: "🗄️" }
+    ]
+  },
+  {
+    category: "DevOps & Tools",
+    skills: [
+      { name: "Git / GitHub", level: 95, icon: "📦" },
+      { name: "Docker / Kubernetes", level: 80, icon: "🐳" },
+      { name: "AWS / Vercel", level: 85, icon: "☁️" },
+      { name: "CI/CD Pipelines", level: 80, icon: "🔄" }
+    ]
+  },
+  {
+    category: "Currently Exploring",
+    skills: [
+      { name: "Rust", level: 60, icon: "🦀" },
+      { name: "Web3 / Blockchain", level: 55, icon: "⛓️" },
+      { name: "AI/ML Integration", level: 70, icon: "🤖" },
+      { name: "Astro Framework", level: 85, icon: "🚀" }
+    ]
+  }
+];
+---
+
+<section id="skills" class="skills">
+  <div class="container">
+    <h2>Skills & Expertise</h2>
+    <p class="skills-subtitle">Technologies I work with and continuously learning</p>
+
+    <div class="skills-grid">
+      {skillCategories.map((category) => (
+        <div class="skill-category">
+          <h3>{category.category}</h3>
+          <div class="skills-list">
+            {category.skills.map((skill) => (
+              <div class="skill-item">
+                <div class="skill-header">
+                  <span class="skill-name">
+                    <span class="skill-icon">{skill.icon}</span>
+                    {skill.name}
+                  </span>
+                  <span class="skill-percentage">{skill.level}%</span>
+                </div>
+                <div class="skill-bar">
+                  <div
+                    class="skill-progress"
+                    style={`width: ${skill.level}%`}
+                    data-level={skill.level}
+                  ></div>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      ))}
+    </div>
+  </div>
+</section>
+
+<style>
+  .skills {
+    padding: 5rem 0;
+    background: var(--bg);
+  }
+
+  .skills h2 {
+    text-align: center;
+    margin-bottom: 0.5rem;
+    color: var(--text);
+  }
+
+  .skills-subtitle {
+    text-align: center;
+    color: var(--text-light);
+    margin-bottom: 3rem;
+    font-size: 1.1rem;
+  }
+
+  .skills-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 2rem;
+    max-width: 1200px;
+    margin: 0 auto;
+  }
+
+  .skill-category {
+    background: var(--bg-secondary);
+    padding: 2rem;
+    border-radius: 16px;
+    border: 1px solid var(--border);
+    transition: transform var(--transition), box-shadow var(--transition);
+  }
+
+  .skill-category:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 24px var(--shadow);
+  }
+
+  .skill-category h3 {
+    font-size: 1.25rem;
+    color: var(--primary);
+    margin-bottom: 1.5rem;
+    padding-bottom: 0.75rem;
+    border-bottom: 2px solid var(--border);
+  }
+
+  .skills-list {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+  }
+
+  .skill-item {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+
+  .skill-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  .skill-name {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-weight: 600;
+    color: var(--text);
+    font-size: 0.95rem;
+  }
+
+  .skill-icon {
+    font-size: 1.2rem;
+  }
+
+  .skill-percentage {
+    font-size: 0.875rem;
+    font-weight: 700;
+    color: var(--primary);
+  }
+
+  .skill-bar {
+    height: 8px;
+    background: var(--border);
+    border-radius: 10px;
+    overflow: hidden;
+    position: relative;
+  }
+
+  .skill-progress {
+    height: 100%;
+    background: linear-gradient(90deg, var(--primary), var(--secondary));
+    border-radius: 10px;
+    transition: width 1.5s cubic-bezier(0.4, 0, 0.2, 1);
+    position: relative;
+    overflow: hidden;
+  }
+
+  .skill-progress::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    right: 0;
+    background: linear-gradient(
+      90deg,
+      transparent,
+      rgba(255, 255, 255, 0.3),
+      transparent
+    );
+    animation: shimmer 2s infinite;
+  }
+
+  @keyframes shimmer {
+    0% {
+      transform: translateX(-100%);
+    }
+    100% {
+      transform: translateX(100%);
+    }
+  }
+
+  /* Animation on scroll */
+  @media (prefers-reduced-motion: no-preference) {
+    .skill-progress {
+      width: 0 !important;
+    }
+
+    .skill-item:has(.skill-progress[data-level]) .skill-progress {
+      animation: fillBar 1.5s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+    }
+  }
+
+  @keyframes fillBar {
+    from {
+      width: 0;
+    }
+    to {
+      width: var(--skill-level, 100%);
+    }
+  }
+
+  @media (max-width: 768px) {
+    .skills {
+      padding: 3rem 0;
+    }
+
+    .skills-grid {
+      grid-template-columns: 1fr;
+      gap: 1.5rem;
+    }
+
+    .skill-category {
+      padding: 1.5rem;
+    }
+  }
+</style>
+
+<script>
+  // Animate skill bars on scroll
+  function animateSkillBars() {
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          const progress = entry.target as HTMLElement;
+          const level = progress.getAttribute('data-level');
+          if (level) {
+            progress.style.width = `${level}%`;
+          }
+          observer.unobserve(entry.target);
+        }
+      });
+    }, { threshold: 0.5 });
+
+    document.querySelectorAll('.skill-progress').forEach(progress => {
+      observer.observe(progress);
+    });
+  }
+
+  // Initialize on load and after view transitions
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', animateSkillBars);
+  } else {
+    animateSkillBars();
+  }
+
+  document.addEventListener('astro:page-load', animateSkillBars);
+</script>

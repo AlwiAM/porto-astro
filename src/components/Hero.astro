@@ -10,16 +10,20 @@ import { profile } from '../data/portfolio';
       <p class="hero-bio">{profile.bio}</p>
       <div class="hero-stats">
         <div class="stat-item">
-          <strong>5+</strong>
+          <strong>7+</strong>
           <span>Years Experience</span>
         </div>
         <div class="stat-item">
-          <strong>20+</strong>
-          <span>Projects Completed</span>
+          <strong>50+</strong>
+          <span>Projects Delivered</span>
         </div>
         <div class="stat-item">
-          <strong>15+</strong>
+          <strong>35+</strong>
           <span>Happy Clients</span>
+        </div>
+        <div class="stat-item">
+          <strong>200+</strong>
+          <span>Students Trained</span>
         </div>
       </div>
       <div class="hero-cta">
@@ -161,7 +165,9 @@ import { profile } from '../data/portfolio';
     }
 
     .hero-stats {
-      gap: 1.5rem;
+      gap: 1rem;
+      grid-template-columns: repeat(2, 1fr);
+      display: grid;
     }
 
     .stat-item strong {
