@@ -17,6 +17,30 @@ const {
 
 const canonicalURL = new URL(Astro.url.pathname, Astro.site);
 const ogImageURL = new URL(image, Astro.site);
+
+// Schema.org structured data for SEO
+const personSchema = {
+  "@context": "https://schema.org",
+  "@type": "Person",
+  name: "Adam Maulana",
+  jobTitle: "Full Stack Web Developer & IT Trainer",
+  url: Astro.site,
+  image: ogImageURL,
+  sameAs: [
+    "https://github.com/AlwiAM",
+    "https://linkedin.com/in/adam-maulana",
+  ],
+  knowsAbout: [
+    "Web Development",
+    "JavaScript",
+    "TypeScript",
+    "React",
+    "Node.js",
+    "Astro",
+    "Full Stack Development"
+  ],
+  description: description
+};
 ---
 
 <!doctype html>
@@ -30,6 +54,9 @@ const ogImageURL = new URL(image, Astro.site);
     <link rel="canonical" href={canonicalURL} />
     <link rel="manifest" href="/manifest.json" />
     <meta name="theme-color" content="#3b82f6" />
+
+    <!-- Schema.org for Google -->
+    <script type="application/ld+json" set:html={JSON.stringify(personSchema)} />
 
     <!-- Primary Meta Tags -->
     <title>{title}</title>
