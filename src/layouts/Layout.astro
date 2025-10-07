@@ -89,15 +89,29 @@ const personSchema = {
     </style>
   </head>
   <body>
+    <!-- Scroll Progress Indicator -->
+    <div id="scroll-progress" class="scroll-progress"></div>
+
     <nav class="navbar">
       <div class="container">
         <a href="/" class="logo">AM</a>
-        <ul class="nav-links">
+
+        <!-- Mobile Menu Toggle -->
+        <button id="mobile-menu-toggle" class="mobile-menu-toggle" aria-label="Toggle menu">
+          <span></span>
+          <span></span>
+          <span></span>
+        </button>
+
+        <ul class="nav-links" id="nav-links">
           <li><a href="/">Home</a></li>
           <li><a href="/#about">About</a></li>
+          <li><a href="/#skills">Skills</a></li>
           <li><a href="/#projects">Projects</a></li>
+          <li><a href="/#testimonials">Testimonials</a></li>
           <li><a href="/blog">Blog</a></li>
           <li><a href="/#contact">Contact</a></li>
+          <li><a href="/resume.pdf" download class="btn-resume">Download CV</a></li>
           <li>
             <button id="theme-toggle" class="theme-toggle" aria-label="Toggle theme">
               <svg class="sun-icon" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
@@ -122,6 +136,14 @@ const personSchema = {
     <main>
       <slot />
     </main>
+
+    <!-- Back to Top Button -->
+    <button id="back-to-top" class="back-to-top" aria-label="Back to top">
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <polyline points="18 15 12 9 6 15"></polyline>
+      </svg>
+    </button>
+
     <footer>
       <div class="container">
         <p>&copy; {new Date().getFullYear()} Adam Maulana. Built with Astro.</p>
@@ -150,15 +172,78 @@ const personSchema = {
         });
       }
 
+      // Mobile menu functionality
+      function initMobileMenu() {
+        const mobileToggle = document.getElementById('mobile-menu-toggle');
+        const navLinks = document.getElementById('nav-links');
+
+        if (!mobileToggle || !navLinks) return;
+
+        const newToggle = mobileToggle.cloneNode(true) as HTMLElement;
+        mobileToggle.parentNode?.replaceChild(newToggle, mobileToggle);
+
+        newToggle.addEventListener('click', () => {
+          newToggle.classList.toggle('active');
+          navLinks.classList.toggle('active');
+        });
+
+        // Close menu when clicking on a link
+        navLinks.querySelectorAll('a').forEach(link => {
+          link.addEventListener('click', () => {
+            newToggle.classList.remove('active');
+            navLinks.classList.remove('active');
+          });
+        });
+      }
+
+      // Scroll progress indicator
+      function updateScrollProgress() {
+        const scrollProgress = document.getElementById('scroll-progress');
+        if (!scrollProgress) return;
+
+        const scrollTop = window.scrollY;
+        const docHeight = document.documentElement.scrollHeight - window.innerHeight;
+        const scrollPercent = (scrollTop / docHeight) * 100;
+
+        scrollProgress.style.width = `${scrollPercent}%`;
+      }
+
+      // Back to top button
+      function initBackToTop() {
+        const backToTop = document.getElementById('back-to-top');
+        if (!backToTop) return;
+
+        window.addEventListener('scroll', () => {
+          if (window.scrollY > 500) {
+            backToTop.classList.add('visible');
+          } else {
+            backToTop.classList.remove('visible');
+          }
+        });
+
+        backToTop.addEventListener('click', () => {
+          window.scrollTo({ top: 0, behavior: 'smooth' });
+        });
+      }
+
+      // Initialize all features
+      function initAll() {
+        initThemeToggle();
+        initMobileMenu();
+        initBackToTop();
+        window.addEventListener('scroll', updateScrollProgress);
+        updateScrollProgress();
+      }
+
       // Initialize on DOM ready and after view transitions
       if (document.readyState === 'loading') {
-        document.addEventListener('DOMContentLoaded', initThemeToggle);
+        document.addEventListener('DOMContentLoaded', initAll);
       } else {
-        initThemeToggle();
+        initAll();
       }
 
       // Re-initialize after Astro view transitions
-      document.addEventListener('astro:page-load', initThemeToggle);
+      document.addEventListener('astro:page-load', initAll);
 
       // Register Service Worker for PWA
       if ('serviceWorker' in navigator) {
@@ -276,6 +361,53 @@ const personSchema = {
     color: var(--primary);
   }
 
+  /* Resume Download Button */
+  .btn-resume {
+    padding: 0.5rem 1rem !important;
+    background: var(--primary) !important;
+    color: white !important;
+    border-radius: 6px;
+    font-weight: 600 !important;
+    transition: all var(--transition) !important;
+  }
+
+  .btn-resume:hover {
+    background: var(--primary-dark) !important;
+    transform: translateY(-2px);
+  }
+
+  /* Mobile Menu Toggle */
+  .mobile-menu-toggle {
+    display: none;
+    flex-direction: column;
+    gap: 5px;
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 0.5rem;
+    z-index: 1001;
+  }
+
+  .mobile-menu-toggle span {
+    width: 25px;
+    height: 3px;
+    background: var(--text);
+    border-radius: 3px;
+    transition: all 0.3s ease;
+  }
+
+  .mobile-menu-toggle.active span:nth-child(1) {
+    transform: rotate(45deg) translate(8px, 8px);
+  }
+
+  .mobile-menu-toggle.active span:nth-child(2) {
+    opacity: 0;
+  }
+
+  .mobile-menu-toggle.active span:nth-child(3) {
+    transform: rotate(-45deg) translate(7px, -7px);
+  }
+
   /* Theme Toggle */
   .theme-toggle {
     background: transparent;
@@ -375,13 +507,113 @@ const personSchema = {
     color: white;
   }
 
+  /* Scroll Progress Indicator */
+  .scroll-progress {
+    position: fixed;
+    top: 0;
+    left: 0;
+    height: 3px;
+    background: linear-gradient(90deg, var(--primary), var(--secondary));
+    z-index: 1002;
+    transition: width 0.1s ease;
+  }
+
+  /* Back to Top Button */
+  .back-to-top {
+    position: fixed;
+    bottom: 2rem;
+    right: 2rem;
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    background: var(--primary);
+    color: white;
+    border: none;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 4px 12px var(--shadow);
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(20px);
+    transition: all 0.3s ease;
+    z-index: 999;
+  }
+
+  .back-to-top.visible {
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(0);
+  }
+
+  .back-to-top:hover {
+    background: var(--primary-dark);
+    transform: translateY(-5px);
+    box-shadow: 0 6px 20px var(--shadow);
+  }
+
   /* Responsive */
-  @media (max-width: 768px) {
-    .nav-links {
-      gap: 1rem;
-      font-size: 0.9rem;
+  @media (max-width: 968px) {
+    .mobile-menu-toggle {
+      display: flex;
     }
 
+    .nav-links {
+      position: fixed;
+      top: 70px;
+      right: -100%;
+      width: 100%;
+      max-width: 300px;
+      height: calc(100vh - 70px);
+      background: var(--bg);
+      border-left: 1px solid var(--border);
+      flex-direction: column;
+      gap: 0;
+      padding: 2rem 0;
+      transition: right 0.3s ease;
+      box-shadow: -4px 0 12px var(--shadow);
+    }
+
+    .nav-links.active {
+      right: 0;
+    }
+
+    .nav-links li {
+      width: 100%;
+    }
+
+    .nav-links a,
+    .nav-links button {
+      display: block;
+      width: 100%;
+      text-align: left;
+      padding: 1rem 2rem;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .btn-resume {
+      margin: 1rem 2rem !important;
+      width: calc(100% - 4rem) !important;
+      text-align: center !important;
+      display: block !important;
+    }
+
+    .theme-toggle {
+      margin: 0 2rem;
+      width: calc(100% - 4rem);
+      justify-content: center;
+    }
+
+    .back-to-top {
+      bottom: 6rem;
+      right: 1rem;
+      width: 45px;
+      height: 45px;
+    }
+  }
+
+  @media (max-width: 768px) {
     .container {
       padding: 0 1rem;
     }
