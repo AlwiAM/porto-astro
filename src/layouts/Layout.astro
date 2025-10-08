@@ -232,12 +232,19 @@ const personSchema = {
       // Cursor glow effect
       function initCursorGlow() {
         const cursorGlow = document.getElementById('cursor-glow');
-        if (!cursorGlow) return;
+        if (!cursorGlow) {
+          console.warn('Cursor glow element not found');
+          return;
+        }
 
-        let mouseX = 0;
-        let mouseY = 0;
-        let glowX = 0;
-        let glowY = 0;
+        let mouseX = window.innerWidth / 2;
+        let mouseY = window.innerHeight / 2;
+        let glowX = mouseX;
+        let glowY = mouseY;
+
+        // Set initial position
+        cursorGlow.style.left = `${glowX}px`;
+        cursorGlow.style.top = `${glowY}px`;
 
         document.addEventListener('mousemove', (e) => {
           mouseX = e.clientX;
@@ -249,8 +256,8 @@ const personSchema = {
           const dx = mouseX - glowX;
           const dy = mouseY - glowY;
 
-          glowX += dx * 0.1;
-          glowY += dy * 0.1;
+          glowX += dx * 0.15;
+          glowY += dy * 0.15;
 
           cursorGlow.style.left = `${glowX}px`;
           cursorGlow.style.top = `${glowY}px`;
@@ -259,6 +266,7 @@ const personSchema = {
         }
 
         animate();
+        console.log('Cursor glow initialized');
       }
 
       // Scroll-triggered animations
@@ -364,26 +372,29 @@ const personSchema = {
   /* Cursor Glow Effect */
   .cursor-glow {
     position: fixed;
-    width: 600px;
-    height: 600px;
+    width: 800px;
+    height: 800px;
     border-radius: 50%;
     background: radial-gradient(
       circle,
-      rgba(59, 130, 246, 0.15) 0%,
-      rgba(59, 130, 246, 0.05) 40%,
+      rgba(59, 130, 246, 0.25) 0%,
+      rgba(59, 130, 246, 0.12) 30%,
+      rgba(59, 130, 246, 0.05) 50%,
       transparent 70%
     );
     pointer-events: none;
-    z-index: 9998;
+    z-index: 50;
     transform: translate(-50%, -50%);
-    transition: opacity 0.3s ease;
+    mix-blend-mode: screen;
+    will-change: transform;
   }
 
   [data-theme="dark"] .cursor-glow {
     background: radial-gradient(
       circle,
-      rgba(96, 165, 250, 0.2) 0%,
-      rgba(96, 165, 250, 0.08) 40%,
+      rgba(96, 165, 250, 0.3) 0%,
+      rgba(96, 165, 250, 0.15) 30%,
+      rgba(96, 165, 250, 0.08) 50%,
       transparent 70%
     );
   }
