@@ -232,10 +232,7 @@ const personSchema = {
       // Cursor glow effect
       function initCursorGlow() {
         const cursorGlow = document.getElementById('cursor-glow');
-        if (!cursorGlow) {
-          console.warn('Cursor glow element not found');
-          return;
-        }
+        if (!cursorGlow) return;
 
         let mouseX = window.innerWidth / 2;
         let mouseY = window.innerHeight / 2;
@@ -266,7 +263,6 @@ const personSchema = {
         }
 
         animate();
-        console.log('Cursor glow initialized');
       }
 
       // Scroll-triggered animations
