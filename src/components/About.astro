@@ -4,12 +4,12 @@ import { profile, skills } from '../data/portfolio';
 
 <section id="about" class="about">
   <div class="container">
-    <h2>About Me</h2>
-    <p class="about-bio">{profile.bio}</p>
+    <h2 class="scroll-animate">About Me</h2>
+    <p class="about-bio scroll-animate">{profile.bio}</p>
 
     <div class="skills-grid">
-      {skills.map((skillGroup) => (
-        <div class="skill-category">
+      {skills.map((skillGroup, index) => (
+        <div class="skill-category scroll-animate" style={`transition-delay: ${index * 0.1}s`}>
           <h3>{skillGroup.category}</h3>
           <ul class="skill-list">
             {skillGroup.items.map((skill) => (

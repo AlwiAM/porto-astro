@@ -4,12 +4,12 @@ import { projects } from '../data/portfolio';
 
 <section id="projects" class="projects">
   <div class="container">
-    <h2>Featured Projects</h2>
-    <p class="projects-subtitle">Here are some of my recent works</p>
+    <h2 class="scroll-animate">Featured Projects</h2>
+    <p class="projects-subtitle scroll-animate">Here are some of my recent works</p>
 
     <div class="projects-grid">
-      {projects.map((project) => (
-        <article class="project-card">
+      {projects.map((project, index) => (
+        <article class="project-card scroll-animate" style={`transition-delay: ${index * 0.1}s`}>
           <div class="project-image">
             <img
               src={project.image}

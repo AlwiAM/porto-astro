@@ -89,6 +89,9 @@ const personSchema = {
     </style>
   </head>
   <body>
+    <!-- Cursor Glow Effect -->
+    <div id="cursor-glow" class="cursor-glow"></div>
+
     <!-- Scroll Progress Indicator -->
     <div id="scroll-progress" class="scroll-progress"></div>
 
@@ -226,11 +229,64 @@ const personSchema = {
         });
       }
 
+      // Cursor glow effect
+      function initCursorGlow() {
+        const cursorGlow = document.getElementById('cursor-glow');
+        if (!cursorGlow) return;
+
+        let mouseX = 0;
+        let mouseY = 0;
+        let glowX = 0;
+        let glowY = 0;
+
+        document.addEventListener('mousemove', (e) => {
+          mouseX = e.clientX;
+          mouseY = e.clientY;
+        });
+
+        // Smooth animation using requestAnimationFrame
+        function animate() {
+          const dx = mouseX - glowX;
+          const dy = mouseY - glowY;
+
+          glowX += dx * 0.1;
+          glowY += dy * 0.1;
+
+          cursorGlow.style.left = `${glowX}px`;
+          cursorGlow.style.top = `${glowY}px`;
+
+          requestAnimationFrame(animate);
+        }
+
+        animate();
+      }
+
+      // Scroll-triggered animations
+      function initScrollAnimations() {
+        const animatedElements = document.querySelectorAll('.scroll-animate');
+
+        const observer = new IntersectionObserver((entries) => {
+          entries.forEach(entry => {
+            if (entry.isIntersecting) {
+              entry.target.classList.add('animated');
+              observer.unobserve(entry.target);
+            }
+          });
+        }, {
+          threshold: 0.1,
+          rootMargin: '0px 0px -100px 0px'
+        });
+
+        animatedElements.forEach(el => observer.observe(el));
+      }
+
       // Initialize all features
       function initAll() {
         initThemeToggle();
         initMobileMenu();
         initBackToTop();
+        initCursorGlow();
+        initScrollAnimations();
         window.addEventListener('scroll', updateScrollProgress);
         updateScrollProgress();
       }
@@ -302,6 +358,53 @@ const personSchema = {
     line-height: 1.6;
     color: var(--text);
     background: var(--bg);
+    position: relative;
+  }
+
+  /* Cursor Glow Effect */
+  .cursor-glow {
+    position: fixed;
+    width: 600px;
+    height: 600px;
+    border-radius: 50%;
+    background: radial-gradient(
+      circle,
+      rgba(59, 130, 246, 0.15) 0%,
+      rgba(59, 130, 246, 0.05) 40%,
+      transparent 70%
+    );
+    pointer-events: none;
+    z-index: 9998;
+    transform: translate(-50%, -50%);
+    transition: opacity 0.3s ease;
+  }
+
+  [data-theme="dark"] .cursor-glow {
+    background: radial-gradient(
+      circle,
+      rgba(96, 165, 250, 0.2) 0%,
+      rgba(96, 165, 250, 0.08) 40%,
+      transparent 70%
+    );
+  }
+
+  /* Hide cursor glow on touch devices */
+  @media (hover: none) {
+    .cursor-glow {
+      display: none;
+    }
+  }
+
+  /* Scroll animations */
+  .scroll-animate {
+    opacity: 0;
+    transform: translateY(30px);
+    transition: opacity 0.6s ease, transform 0.6s ease;
+  }
+
+  .scroll-animate.animated {
+    opacity: 1;
+    transform: translateY(0);
   }
 
   .container {
